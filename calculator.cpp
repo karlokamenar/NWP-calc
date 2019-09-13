@@ -10,6 +10,7 @@ Calculator::Calculator(QWidget *parent)
     ui->setupUi(this);
 
     ui->Ekran->setText(QString::number(vrijednost));
+    ui->Ekran->setEnabled(false);
 
     QPushButton *brojeviButtons[10];
 
