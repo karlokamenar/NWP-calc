@@ -74,7 +74,7 @@ void Calculator::StisnutMatBroj()
         plusTrig = true;
     else
         minusTrig = true;
-    ui->Ekran->setText("");
+    ui->Ekran->setText(ekranVrijednost+butVrijednost);
 }
 
 void Calculator::StisnutJednako()
