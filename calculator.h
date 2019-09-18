@@ -23,6 +23,7 @@ public:
 
 private:
     Ui::Calculator *ui;
+    const int DIGIT_LIMIT = 16;
 
 
 private slots:
@@ -31,6 +32,8 @@ private slots:
     void StisnutMatBroj();
     void StisnutJednako();
     void StisnutCisti();
+    void StisnutTocka();
+    void StisnutBrisi();
 
 
 };

@@ -28,6 +28,10 @@ connect(ui->Dijeli, SIGNAL(released()), this, SLOT(StisnutMatBroj()));
 connect(ui->Jednako, SIGNAL(released()), this, SLOT(StisnutJednako()));
 connect(ui->MjenjajZnak, SIGNAL(released()), this, SLOT(StisnutPromjeniZnak()));
 connect(ui->Cisti, SIGNAL(released()), this, SLOT(StisnutCisti()));
+connect(ui->Tocka, SIGNAL(released()), this, SLOT(StisnutTocka()));
+connect(ui->Brisi, SIGNAL(released()), this, SLOT(StisnutBrisi()));
+
+
 }
 
 
@@ -42,15 +46,14 @@ void Calculator::StisnutBroj()
     QString butVrijednost = button->text();
     QString ekranVrijednost = ui->Ekran->text();
 
-    if((ekranVrijednost.toDouble() == 0) || (ekranVrijednost.toDouble() == 0.0))
+    if(ekranVrijednost.toDouble() == 0)
         {
         ui->Ekran->setText(butVrijednost);
         }
     else
     {
         QString novaVrijednost = ekranVrijednost + butVrijednost;
-        double dblNovaVrijednost = novaVrijednost.toDouble();
-        ui->Ekran->setText(QString::number(dblNovaVrijednost, 'g', 16));
+        ui->Ekran->setText(novaVrijednost);
     }
 }
 
@@ -66,11 +69,11 @@ void Calculator::StisnutMatBroj()
     QPushButton *button = (QPushButton *)sender();
     QString butVrijednost = button->text();
 
-    if(QString::compare(butVrijednost, "/", Qt::CaseSensitive) == 0)
+    if(butVrijednost == "/")
         dijeliTrig = true;
-    else if(QString::compare(butVrijednost, "*", Qt::CaseSensitive) == 0)
+    else if(butVrijednost == "*")
         mnoziTrig = true;
-    else if(QString::compare(butVrijednost, "+", Qt::CaseSensitive) == 0)
+    else if(butVrijednost == "+")
         plusTrig = true;
     else
         minusTrig = true;
@@ -79,7 +82,7 @@ void Calculator::StisnutMatBroj()
 
 void Calculator::StisnutJednako()
 {
-    double rjesenje = 0.0;
+    double rjesenje;
 
     QString ekranVrijednost = ui->Ekran->text();
     double dblEkranVrijednost = ekranVrijednost.toDouble();
@@ -95,26 +98,60 @@ void Calculator::StisnutJednako()
         else
             rjesenje = vrijednost / dblEkranVrijednost;
         }
-    ui->Ekran->setText(QString::number(rjesenje));
+    else
+        rjesenje = dblEkranVrijednost;
+    if(rjesenje == dblEkranVrijednost)
+        ui->Ekran->setText(QString::number(dblEkranVrijednost));
+    else
+        ui->Ekran->setText(QString::number(rjesenje));
+    dijeliTrig = false;
+    mnoziTrig = false;
+    plusTrig = false;
+    minusTrig = false;
 }
 
 void Calculator::StisnutPromjeniZnak()
 {
     QString ekranVrijednost = ui->Ekran->text();
+
     QRegExp reg("[-+]?[0-9.]*");
+
+    if(ekranVrijednost.contains('/',Qt::CaseSensitive) || ekranVrijednost.contains('*',Qt::CaseSensitive) || ekranVrijednost.contains('+',Qt::CaseSensitive) || ekranVrijednost.contains('-',Qt::CaseSensitive))
+        ekranVrijednost.chop(1);
 
     if(reg.exactMatch(ekranVrijednost))
         {
             double dblEkranVrijednost = ekranVrijednost.toDouble();
-            double dblEkranVrijednostZnak = -1 * dblEkranVrijednost;
-            ui->Ekran->setText(QString::number(dblEkranVrijednostZnak));
+            dblEkranVrijednost *= -1;
+            ui->Ekran->setText(QString::number(dblEkranVrijednost));
         }
 }
 
 void Calculator::StisnutCisti()
 {
-    double rjesenje = 0.0;
-    ui->Ekran->setText(QString::number(rjesenje));
+    ui->Ekran->clear();
+    ui->Ekran->setText("0");
+
+}
+
+void Calculator::StisnutTocka()
+{
+    QString ekranVrijednost = ui->Ekran->text();
+    if(ekranVrijednost.length() >= (DIGIT_LIMIT - 1) || ekranVrijednost.contains('.',Qt::CaseSensitive))
+        return;
+    if(ekranVrijednost.length() == 0)
+        ekranVrijednost = "0";
+    ekranVrijednost.append('.');
+    ui->Ekran->setText(ekranVrijednost);
+}
+
+void Calculator::StisnutBrisi()
+{
+    QString ekranVrijednost = ui->Ekran->text();
+    ekranVrijednost.QString::chop(1);
+    ui->Ekran->setText(ekranVrijednost);
+    if(ekranVrijednost.length() == 0)
+        ui->Ekran->setText("0");
 
 }
 
